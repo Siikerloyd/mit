@@ -1,0 +1,191 @@
+:root {
+    --primary: #38bdf8;
+    --primary-dark: #0f172a;
+    --bg-top: #0f172a;
+    --bg-bottom: #1e293b;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 16px;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.22), transparent 50%),
+                linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
+    color: var(--primary-dark);
+}
+main {
+    width: min(600px, 100%);
+}
+.auth-wrapper {
+    position: relative;
+}
+.auth-card {
+    display: none;
+    border-radius: 20px;
+    padding: 56px 52px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 32px 64px -24px rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(18px);
+}
+.auth-card.active {
+    display: block;
+    animation: cardFade 0.45s ease forwards;
+}
+.auth-card.inactive {
+    display: none;
+}
+.auth-card h1 {
+    margin: 0 0 16px;
+    font-size: 2.5rem;
+    color: var(--primary-dark);
+}
+.subtitle {
+    margin: 0 0 32px;
+    font-size: 1.1rem;
+    color: rgba(15, 23, 42, 0.68);
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+label {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    font-size: 1.05rem;
+    color: rgba(15, 23, 42, 0.78);
+}
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.55);
+    background: rgba(255, 255, 255, 0.98);
+    padding: 16px 20px;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.input-wrapper:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+}
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    font-size: 1.1rem;
+    background: transparent;
+    color: var(--primary-dark);
+    padding: 4px 0;
+}
+.input-wrapper input:focus {
+    outline: none;
+}
+.input-icon {
+    font-size: 1.2rem;
+    color: rgba(59, 130, 246, 0.9);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+}
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 12px;
+}
+button {
+    flex: 1 0 48%;
+    border-radius: 999px;
+    border: none;
+    padding: 14px 24px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+button i {
+    font-size: 1.1rem;
+}
+.primary-button {
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    color: white;
+    box-shadow: 0 18px 30px -20px rgba(56, 189, 248, 0.75);
+}
+.primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 36px -18px rgba(14, 165, 233, 0.8);
+}
+.secondary-button {
+    background: rgba(15, 23, 42, 0.08);
+    color: var(--primary-dark);
+}
+.secondary-button:hover {
+    background: rgba(15, 23, 42, 0.16);
+    transform: translateY(-1px);
+}
+.fine-print {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: rgba(15, 23, 42, 0.55);
+}
+.message {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.message-success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.message-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+@media (max-width: 560px) {
+    body {
+        padding: 36px 12px;
+    }
+    .auth-card {
+        padding: 32px 24px;
+    }
+    button {
+        flex: 1 0 100%;
+    }
+}
+@keyframes cardFade {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
