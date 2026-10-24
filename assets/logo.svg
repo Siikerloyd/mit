@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 178 36" fill="none" width="178" height="36">
+  <defs>
+    <!-- Top Face Gradient -->
+    <linearGradient id="topFace" x1="4" y1="3" x2="32" y2="19" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <!-- Left Face Gradient -->
+    <linearGradient id="leftFace" x1="4" y1="11" x2="18" y2="33" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <!-- Right Face Gradient -->
+    <linearGradient id="rightFace" x1="18" y1="19" x2="32" y2="33" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1E40AF" />
+      <stop offset="100%" stop-color="#0F2864" />
+    </linearGradient>
+
+    <!-- Subtle Glow -->
+    <filter id="markGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#3B82F6" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- ISOMETRIC INVENTORY CUBE ICON -->
+  <g filter="url(#markGlow)">
+    <!-- Top Face -->
+    <polygon points="18,3 32,11 18,19 4,11" fill="url(#topFace)" stroke="#93C5FD" stroke-width="0.75" stroke-linejoin="round" />
+
+    <!-- Left Face -->
+    <polygon points="4,11 18,19 18,33 4,25" fill="url(#leftFace)" stroke="#60A5FA" stroke-width="0.75" stroke-linejoin="round" />
+
+    <!-- Right Face -->
+    <polygon points="18,19 32,11 32,25 18,33" fill="url(#rightFace)" stroke="#3B82F6" stroke-width="0.75" stroke-linejoin="round" />
+
+    <!-- Internal Crate Seam Lines -->
+    <!-- Top groove -->
+    <path d="M11 7 L25 15" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="0.8" stroke-linecap="round" />
+    <!-- Left ribs -->
+    <path d="M4 18 L18 26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="0.75" />
+    <!-- Right ribs -->
+    <path d="M18 26 L32 18" stroke="#60A5FA" stroke-opacity="0.25" stroke-width="0.75" />
+
+    <!-- Center Pivot Highlight Pip -->
+    <circle cx="18" cy="19" r="1.75" fill="#FFFFFF" opacity="0.9" />
+    <circle cx="18" cy="19" r="0.75" fill="#3B82F6" />
+  </g>
+
+  <!-- LOGO WORDMARK -->
+  <g id="brand-text">
+    <!-- "FORGE" - Crisp Solid White -->
+    <text x="44" y="22" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" letter-spacing="0.06em" fill="#F0F4F8">FORGE</text>
+    
+    <!-- "STOCK" - Vibrant Cobalt Accent -->
+    <text x="104" y="22" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="800" letter-spacing="0.06em" fill="#3B82F6">STOCK</text>
+
+    <!-- Subtitle Micro-tag -->
+    <text x="45" y="31" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="6.5" font-weight="700" letter-spacing="0.18em" fill="#64748B">INVENTORY WORKSTATION</text>
+  </g>
+</svg>
+

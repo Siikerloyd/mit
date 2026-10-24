@@ -73,7 +73,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management - Native PHP App</title>
+    <title>Products — Inventory Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="assets/index.css">
     <link rel="stylesheet" href="assets/product_management.css">
@@ -82,7 +82,8 @@ $conn->close();
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <img src="assets/logo3.png" alt="Logo" class="logo">
+            <img src="assets/logo.svg" alt="ForgeStock" class="logo">
+            <span class="app-label">Inventory</span>
         </div>
         <div class="header-right">
             <a href="logout.php" class="logout-btn">
@@ -95,17 +96,18 @@ $conn->close();
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <nav class="nav">
+                <span class="nav-label">Workspace</span>
                 <a href="product_management.php" class="nav-item active">
                     <i class="fa-solid fa-box"></i>
-                    <span>Product Management</span>
+                    <span>Products</span>
                 </a>
                 <a href="stock_management.php" class="nav-item">
                     <i class="fa-solid fa-warehouse"></i>
-                    <span>Stock Management</span>
+                    <span>Stock</span>
                 </a>
                 <a href="index.php" class="nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
-                    <span>Dashboard & Reports</span>
+                    <span>Dashboard</span>
                 </a>
             </nav>
         </aside>
@@ -113,28 +115,30 @@ $conn->close();
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
+                <!-- Page Header -->
                 <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fa-solid fa-box"></i> Product Management
-                </h1>
-                
+                    <div class="page-title-group">
+                        <h1 class="page-title"><i class="fa-solid fa-box"></i> Product Management</h1>
+                        <span class="page-subtitle">Catalog — <?php echo count($products); ?> item<?php echo count($products) !== 1 ? 's' : ''; ?><?php echo $search ? ' matching "' . htmlspecialchars($search) . '"' : ''; ?></span>
+                    </div>
+                    <button class="btn-primary" onclick="showAddForm()" style="display: <?php echo $editProduct ? 'none' : 'inline-flex'; ?>;">
+                        <i class="fa-solid fa-plus"></i> Add Product
+                    </button>
+                </div>
+
                 <?php if (isset($_SESSION['success'])): ?>
                     <div class="success-message">
                         <i class="fa-solid fa-circle-check"></i>
                         <span><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></span>
                     </div>
                 <?php endif; ?>
-                
+
                 <?php if (isset($_SESSION['error'])): ?>
                     <div class="message message-error">
                         <i class="fa-solid fa-circle-exclamation"></i>
                         <span><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></span>
                     </div>
                 <?php endif; ?>
-                    <button class="btn-primary" onclick="showAddForm()" style="display: <?php echo $editProduct ? 'none' : 'inline-flex'; ?>;">
-                        <i class="fa-solid fa-plus"></i> Add New Product
-                    </button>
-                </div>
 
                 <!-- Add Product Form -->
                 <div id="add-product-form" class="product-form" style="display: <?php echo $editProduct ? 'none' : 'none'; ?>;">
@@ -150,13 +154,13 @@ $conn->close();
                                 <label for="product-name">
                                     <i class="fa-solid fa-tag"></i> Product Name
                                 </label>
-                                <input type="text" id="product-name" name="product_name" required>
+                                <input type="text" id="product-name" name="product_name" placeholder="e.g. Stainless Steel Bolt M8" required>
                             </div>
                             <div class="form-group">
                                 <label for="product-sku">
                                     <i class="fa-solid fa-barcode"></i> SKU
                                 </label>
-                                <input type="text" id="product-sku" name="sku" required>
+                                <input type="text" id="product-sku" name="sku" placeholder="e.g. BOLT-M8-SS" required>
                             </div>
                         </div>
 
@@ -165,13 +169,13 @@ $conn->close();
                                 <label for="product-price">
                                     <i class="fa-solid fa-dollar-sign"></i> Price
                                 </label>
-                                <input type="number" id="product-price" name="price" step="0.01" required>
+                                <input type="number" id="product-price" name="price" step="0.01" placeholder="0.00" required>
                             </div>
                             <div class="form-group">
                                 <label for="product-stock">
                                     <i class="fa-solid fa-cubes"></i> Stock Quantity
                                 </label>
-                                <input type="number" id="product-stock" name="stock" required>
+                                <input type="number" id="product-stock" name="stock" placeholder="0" required>
                             </div>
                         </div>
 
@@ -179,7 +183,7 @@ $conn->close();
                             <label for="product-description">
                                 <i class="fa-solid fa-align-left"></i> Description
                             </label>
-                            <textarea id="product-description" name="description" rows="4"></textarea>
+                            <textarea id="product-description" name="description" placeholder="Optional product description..."></textarea>
                         </div>
 
                         <div class="form-group">
@@ -190,7 +194,7 @@ $conn->close();
                                 <input type="file" id="product-image" name="image" accept="image/*">
                                 <label for="product-image" class="upload-label">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span>Upload Product Image</span>
+                                    <span>Click to upload image</span>
                                 </label>
                             </div>
                         </div>
@@ -207,10 +211,10 @@ $conn->close();
                 <!-- Product List -->
                 <div class="product-list-section">
                     <div class="section-header">
-                        <h2><i class="fa-solid fa-list"></i> Product List</h2>
+                        <h2><i class="fa-solid fa-list"></i> Product Catalog</h2>
                         <form method="get" class="search-box" style="margin:0;">
                             <i class="fa-solid fa-search"></i>
-                            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search products..." autocomplete="off">
+                            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search by name or SKU…" autocomplete="off">
                         </form>
                     </div>
 
@@ -218,29 +222,38 @@ $conn->close();
                         <table class="product-table">
                             <thead>
                                 <tr>
-                                    <th>Image</th>
+                                    <th style="width:52px;"></th>
                                     <th>Product Name</th>
                                     <th>SKU</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Actions</th>
+                                    <th class="col-price">Price</th>
+                                    <th class="col-stock">Stock</th>
+                                    <th style="width:110px; text-align:right;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (empty($products)): ?>
                                     <tr>
-                                        <td colspan="6" style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.6);">
-                                            <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
-                                            No products found. Add your first product to get started!
+                                        <td colspan="6" class="table-empty">
+                                            <i class="fa-solid fa-box-open"></i>
+                                            <?php echo $search ? 'No products matched your search.' : 'No products yet — add your first product to get started.'; ?>
                                         </td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($products as $product): ?>
+                                        <?php
+                                        $stock = (int)$product['stock'];
+                                        $stockClass = 'in-stock';
+                                        if ($stock === 0) {
+                                            $stockClass = 'out-of-stock';
+                                        } elseif ($stock < 10) {
+                                            $stockClass = 'low-stock';
+                                        }
+                                        ?>
                                         <tr>
                                             <td>
                                                 <?php if (!empty($product['image_path']) && file_exists($product['image_path'])): ?>
-                                                    <img src="<?php echo htmlspecialchars($product['image_path']); ?>" 
-                                                         alt="<?php echo htmlspecialchars($product['product_name']); ?>" 
+                                                    <img src="<?php echo htmlspecialchars($product['image_path']); ?>"
+                                                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
                                                          class="product-image-thumb">
                                                 <?php else: ?>
                                                     <div class="product-image-placeholder">
@@ -248,19 +261,10 @@ $conn->close();
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($product['sku']); ?></td>
-                                            <td>$<?php echo number_format($product['price'], 2); ?></td>
-                                            <td>
-                                                <?php 
-                                                $stock = (int)$product['stock'];
-                                                $stockClass = 'in-stock';
-                                                if ($stock === 0) {
-                                                    $stockClass = 'out-of-stock';
-                                                } elseif ($stock < 10) {
-                                                    $stockClass = 'low-stock';
-                                                }
-                                                ?>
+                                            <td class="col-name"><?php echo htmlspecialchars($product['product_name']); ?></td>
+                                            <td class="col-sku"><?php echo htmlspecialchars($product['sku']); ?></td>
+                                            <td class="col-price">$<?php echo number_format($product['price'], 2); ?></td>
+                                            <td class="col-stock">
                                                 <span class="stock-badge <?php echo $stockClass; ?>"><?php echo $stock; ?></span>
                                             </td>
                                             <td>
@@ -287,7 +291,7 @@ $conn->close();
                     </div>
                 </div>
 
-                <!-- Product Details Modal (will show when view is clicked) -->
+                <!-- Product Details Modal -->
                 <?php if ($viewProduct): ?>
                 <div id="product-details-modal" class="modal" style="display:flex;">
                     <div class="modal-content">
@@ -298,7 +302,7 @@ $conn->close();
                         <div class="modal-body">
                             <div class="detail-grid">
                                 <div class="detail-item full-width image-section">
-                                    <label>Product Image:</label>
+                                    <label><i class="fa-solid fa-image"></i> Product Image</label>
                                     <div class="product-image-large">
                                     <?php if (!empty($viewProduct['image_path']) && file_exists($viewProduct['image_path'])): ?>
                                         <img src="<?php echo htmlspecialchars($viewProduct['image_path']); ?>" alt="<?php echo htmlspecialchars($viewProduct['product_name']); ?>">
@@ -310,31 +314,31 @@ $conn->close();
                                     </div>
                                 </div>
                                 <div class="detail-item">
-                                    <label><i class="fa-solid fa-tag"></i> Product Name:</label>
+                                    <label><i class="fa-solid fa-tag"></i> Product Name</label>
                                     <span><?php echo htmlspecialchars($viewProduct['product_name']); ?></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label><i class="fa-solid fa-barcode"></i> SKU:</label>
-                                    <span><?php echo htmlspecialchars($viewProduct['sku']); ?></span>
+                                    <label><i class="fa-solid fa-barcode"></i> SKU</label>
+                                    <span style="font-family:var(--font-mono);font-size:0.9rem;"><?php echo htmlspecialchars($viewProduct['sku']); ?></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label><i class="fa-solid fa-dollar-sign"></i> Price:</label>
-                                    <span style="font-size: 1.3rem; font-weight: 600; color: #38bdf8;">$<?php echo number_format($viewProduct['price'],2); ?></span>
+                                    <label><i class="fa-solid fa-dollar-sign"></i> Price</label>
+                                    <span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;">$<?php echo number_format($viewProduct['price'],2); ?></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label><i class="fa-solid fa-cubes"></i> Stock Quantity:</label>
+                                    <label><i class="fa-solid fa-cubes"></i> Stock Quantity</label>
                                     <span class="stock-badge <?php echo ($viewProduct['stock'] == 0) ? 'out-of-stock' : (($viewProduct['stock'] < 10) ? 'low-stock' : 'in-stock'); ?>">
                                         <?php echo (int)$viewProduct['stock']; ?>
                                     </span>
                                 </div>
                                 <div class="detail-item full-width">
-                                    <label><i class="fa-solid fa-align-left"></i> Description:</label>
-                                    <p style="margin-top: 8px; line-height: 1.6;"><?php echo nl2br(htmlspecialchars($viewProduct['description'] ?: 'No description available.')); ?></p>
+                                    <label><i class="fa-solid fa-align-left"></i> Description</label>
+                                    <p><?php echo nl2br(htmlspecialchars($viewProduct['description'] ?: 'No description available.')); ?></p>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <a class="btn-primary" href="?edit=<?php echo $viewProduct['id']; ?>">
+                            <a class="btn-primary" href="?edit=<?php echo $viewProduct['id']; ?>" style="text-decoration:none;">
                                 <i class="fa-solid fa-pencil"></i> Edit Product
                             </a>
                         </div>
@@ -342,7 +346,7 @@ $conn->close();
                 </div>
                 <?php endif; ?>
 
-                <!-- Edit Product Form (will show when edit is clicked) -->
+                <!-- Edit Product Form -->
                 <div id="edit-product-form" class="product-form" style="display: <?php echo $editProduct ? 'block' : 'none'; ?>;">
                     <div class="form-header">
                         <h2><i class="fa-solid fa-pencil"></i> Edit Product</h2>
@@ -387,7 +391,7 @@ $conn->close();
                             <label for="edit-product-description">
                                 <i class="fa-solid fa-align-left"></i> Description
                             </label>
-                            <textarea id="edit-product-description" name="description" rows="4"><?php echo htmlspecialchars($editProduct['description'] ?? ''); ?></textarea>
+                            <textarea id="edit-product-description" name="description"><?php echo htmlspecialchars($editProduct['description'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="form-group">
@@ -395,16 +399,15 @@ $conn->close();
                                 <i class="fa-solid fa-image"></i> Product Image
                             </label>
                             <?php if (!empty($editProduct['image_path']) && file_exists($editProduct['image_path'])): ?>
-                                <div style="margin-bottom: 15px;">
-                                    <label style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 8px; display: block;">Current Image:</label>
-                                    <img src="<?php echo htmlspecialchars($editProduct['image_path']); ?>" alt="Current product image" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid rgba(56, 189, 248, 0.3); object-fit: contain;">
+                                <div style="margin-bottom:10px;">
+                                    <img src="<?php echo htmlspecialchars($editProduct['image_path']); ?>" alt="Current product image" style="max-width:120px;max-height:120px;border-radius:6px;border:1px solid var(--border-base);object-fit:contain;display:block;">
                                 </div>
                             <?php endif; ?>
                             <div class="image-upload">
                                 <input type="file" id="edit-product-image" name="image" accept="image/*">
                                 <label for="edit-product-image" class="upload-label">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span><?php echo !empty($editProduct['image_path']) ? 'Change Product Image' : 'Upload Product Image'; ?></span>
+                                    <span><?php echo !empty($editProduct['image_path']) ? 'Change image' : 'Upload image'; ?></span>
                                 </label>
                             </div>
                         </div>

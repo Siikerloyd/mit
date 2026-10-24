@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Native PHP App</title>
+    <title>Sign In — Inventory Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="assets/login.css">
     <script>
@@ -106,10 +106,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
 </head>
 <body>
     <main>
+        <!-- Brand mark -->
+        <div class="auth-brand">
+            <img src="assets/logo.svg" alt="ForgeStock">
+            <span class="auth-brand-label">Inventory Workstation</span>
+        </div>
+
         <div class="auth-wrapper">
+            <!-- Login Card -->
             <div id="login-container" class="auth-card active">
-                <h1>Welcome back</h1>
-                <p class="subtitle">Log in to manage your account and stay up to date.</p>
+                <h1>Sign in</h1>
+                <p class="subtitle">Log in to manage your inventory and stock levels.</p>
                 
                 <?php if (isset($_SESSION['success'])): ?>
                     <div class="message message-success">
@@ -130,14 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
                         <label for="login-username">Username</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-                            <input type="text" id="login-username" name="username" required autocomplete="username">
+                            <input type="text" id="login-username" name="username" placeholder="Enter your username" required autocomplete="username">
                         </div>
                     </div>
                     <div class="field-group">
                         <label for="login-password">Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" id="login-password" name="password" required autocomplete="current-password">
+                            <input type="password" id="login-password" name="password" placeholder="Enter your password" required autocomplete="current-password">
                         </div>
                     </div>
                     <div class="button-row">
@@ -147,34 +154,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset(
                 </form>
             </div>
 
+            <!-- Register Card -->
             <div id="register-container" class="auth-card inactive">
                 <h1>Create account</h1>
-                <p class="subtitle">Sign up to unlock personalized dashboards and tools.</p>
+                <p class="subtitle">Register to access the inventory management system.</p>
                 <form action="register.php" method="post">
                     <div class="field-group">
                         <label for="register-username">Username</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-                            <input type="text" id="register-username" name="username" required autocomplete="username">
+                            <input type="text" id="register-username" name="username" placeholder="Choose a username" required autocomplete="username">
                         </div>
                     </div>
                     <div class="field-group">
                         <label for="register-email">Email</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
-                            <input type="email" id="register-email" name="email" required autocomplete="email">
+                            <input type="email" id="register-email" name="email" placeholder="your@email.com" required autocomplete="email">
                         </div>
                     </div>
                     <div class="field-group">
                         <label for="register-password">Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" id="register-password" name="password" required autocomplete="new-password">
+                            <input type="password" id="register-password" name="password" placeholder="At least 6 characters" required autocomplete="new-password">
                         </div>
                     </div>
                     <div class="button-row">
                         <button type="submit" class="primary-button"><i class="fa-solid fa-user-plus"></i> Create account</button>
-                        <button type="button" class="secondary-button" onclick="showLogin()"><i class="fa-solid fa-arrow-left"></i> Back to login</button>
+                        <button type="button" class="secondary-button" onclick="showLogin()"><i class="fa-solid fa-arrow-left"></i> Back to sign in</button>
                     </div>
                 </form>
             </div>

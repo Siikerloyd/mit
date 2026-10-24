@@ -16,7 +16,8 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Stock Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock — Inventory Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="assets/index.css">
     <link rel="stylesheet" href="assets/product_management.css">
@@ -25,7 +26,8 @@ $conn->close();
     <!-- Header -->
     <header class="header">
         <div class="header-left">
-            <img src="assets/logo3.png" alt="Logo" class="logo">
+            <img src="assets/logo.svg" alt="ForgeStock" class="logo">
+            <span class="app-label">Inventory</span>
         </div>
         <div class="header-right">
             <a href="logout.php" class="logout-btn">
@@ -37,54 +39,72 @@ $conn->close();
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <nav class="nav">
+                <span class="nav-label">Workspace</span>
                 <a href="product_management.php" class="nav-item">
                     <i class="fa-solid fa-box"></i>
-                    <span>Product Management</span>
+                    <span>Products</span>
                 </a>
                 <a href="stock_management.php" class="nav-item active">
                     <i class="fa-solid fa-warehouse"></i>
-                    <span>Stock Management</span>
+                    <span>Stock</span>
                 </a>
                 <a href="index.php" class="nav-item">
                     <i class="fa-solid fa-chart-pie"></i>
-                    <span>Dashboard & Reports</span>
+                    <span>Dashboard</span>
                 </a>
             </nav>
         </aside>
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
-                <h1 style="margin-bottom:24px;">Stock Management</h1>
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title-group">
+                        <h1 class="page-title"><i class="fa-solid fa-warehouse"></i> Stock Management</h1>
+                        <span class="page-subtitle"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?> tracked</span>
+                    </div>
+                </div>
+
                 <?php if (isset($_SESSION['success'])): ?>
-                    <div class="success-message"><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></div>
+                    <div class="success-message">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></span>
+                    </div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['error'])): ?>
-                    <div class="message message-error"><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></div>
+                    <div class="message message-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></span>
+                    </div>
                 <?php endif; ?>
-                <div class="table-container">
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Product Name</th>
-                                <th>Stock</th>
-                                <th>Actions</th>
-                                <th>Set Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($products as $product): ?>
+
+                <!-- Stock Table -->
+                <div class="product-list-section">
+                    <div class="section-header">
+                        <h2><i class="fa-solid fa-list-check"></i> Inventory Levels</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="product-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                    <?php if (!empty($product['image_path']) && file_exists($product['image_path'])): ?>
-                                        <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>" class="product-image-thumb">
-                                    <?php else: ?>
-                                        <div class="product-image-placeholder"><i class="fa-solid fa-image"></i></div>
-                                    <?php endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                    <td>
-                                        <?php 
+                                    <th style="width:52px;"></th>
+                                    <th>Product Name</th>
+                                    <th class="col-stock">Current Stock</th>
+                                    <th style="width:100px; text-align:center;">Adjust</th>
+                                    <th style="width:160px;">Set Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($products)): ?>
+                                    <tr>
+                                        <td colspan="5" class="table-empty">
+                                            <i class="fa-solid fa-box-open"></i>
+                                            No products to manage. Add products first.
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($products as $product): ?>
+                                        <?php
                                         $stock = (int)$product['stock'];
                                         $stockClass = 'in-stock';
                                         if ($stock === 0) {
@@ -93,45 +113,61 @@ $conn->close();
                                             $stockClass = 'low-stock';
                                         }
                                         ?>
-                                        <span class="stock-badge <?php echo $stockClass; ?>" id="stock-<?php echo $product['id']; ?>"><?php echo $stock; ?></span>
-                                    </td>
-                                    <td>
-                                        <button class="btn-primary" type="button" onclick="updateStock(<?php echo $product['id']; ?>, 1)" data-product-id="<?php echo $product['id']; ?>">+</button>
-                                        <button class="btn-delete" type="button" onclick="updateStock(<?php echo $product['id']; ?>, -1)" data-product-id="<?php echo $product['id']; ?>">-</button>
-                                    </td>
-                                    <td>
-                                        <form class="inline-set-stock-form" style="display:flex;gap:6px;align-items:center;" onsubmit="setStock(event, <?php echo $product['id']; ?>)">
-                                            <input type="number" id="stock-input-<?php echo $product['id']; ?>" min="0" value="<?php echo (int)$product['stock']; ?>" style="width:70px;padding:6px;">
-                                            <button type="submit" class="btn-secondary">Update</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                        <tr>
+                                            <td>
+                                            <?php if (!empty($product['image_path']) && file_exists($product['image_path'])): ?>
+                                                <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>" class="product-image-thumb">
+                                            <?php else: ?>
+                                                <div class="product-image-placeholder"><i class="fa-solid fa-image"></i></div>
+                                            <?php endif; ?>
+                                            </td>
+                                            <td class="col-name"><?php echo htmlspecialchars($product['product_name']); ?></td>
+                                            <td class="col-stock">
+                                                <span class="stock-badge <?php echo $stockClass; ?>" id="stock-<?php echo $product['id']; ?>"><?php echo $stock; ?></span>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <div class="stepper-group" style="justify-content:center;">
+                                                    <button class="btn-stepper btn-increment" type="button" onclick="updateStock(<?php echo $product['id']; ?>, 1)" data-product-id="<?php echo $product['id']; ?>" title="Increment">+</button>
+                                                    <button class="btn-stepper btn-decrement" type="button" onclick="updateStock(<?php echo $product['id']; ?>, -1)" data-product-id="<?php echo $product['id']; ?>" title="Decrement">−</button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <form class="inline-set-stock-form" onsubmit="setStock(event, <?php echo $product['id']; ?>)">
+                                                    <input type="number" id="stock-input-<?php echo $product['id']; ?>" min="0" value="<?php echo (int)$product['stock']; ?>" class="stock-qty-input" aria-label="Set stock for <?php echo htmlspecialchars($product['product_name']); ?>">
+                                                    <button type="submit" class="btn-secondary" style="font-size:0.78rem;padding:6px 11px;">Set</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Function to show a temporary message
+        // Function to show a temporary toast message
         function showMessage(message, isSuccess = true) {
             const messageDiv = document.createElement('div');
             messageDiv.className = isSuccess ? 'success-message' : 'message message-error';
             messageDiv.style.position = 'fixed';
-            messageDiv.style.top = '20px';
+            messageDiv.style.top = '72px';
             messageDiv.style.right = '20px';
             messageDiv.style.zIndex = '10001';
-            messageDiv.style.minWidth = '300px';
+            messageDiv.style.minWidth = '280px';
+            messageDiv.style.maxWidth = '380px';
+            messageDiv.style.boxShadow = '0 8px 24px rgba(0,0,0,0.4)';
+            messageDiv.style.transition = 'opacity 0.3s';
             messageDiv.innerHTML = '<i class="fa-solid fa-' + (isSuccess ? 'circle-check' : 'circle-exclamation') + '"></i> ' + message;
             document.body.appendChild(messageDiv);
-            
+
             setTimeout(() => {
                 messageDiv.style.opacity = '0';
-                messageDiv.style.transition = 'opacity 0.3s';
                 setTimeout(() => messageDiv.remove(), 300);
-            }, 3000);
+            }, 2800);
         }
 
         // Function to update stock badge color
